@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6349225062475422478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6790327873911306332}
+  - component: {fileID: 4584086481654930440}
+  m_Layer: 0
+  m_Name: MazeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6790327873911306332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6349225062475422478}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4584086481654930440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6349225062475422478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffdf7a8298e957243b153989c5ab2437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rows: 30
+  cols: 10
+  wallPrefab: {fileID: 6288500830280855520, guid: c82ad0ed143dce54e8734a348fcbdf41, type: 3}
+  startPrefab: {fileID: 2349280503772945220, guid: 32bf41e1224023f4f8ed49d4f01c2074, type: 3}
+  finishPrefab: {fileID: 9153886699457041925, guid: c3cdece7e419d11439762da723a8087e, type: 3}
+  floorPrefab: {fileID: 2273293683721486950, guid: 8dd04bd34916bb0429c892b88a838f90, type: 3}
+  mazeParent: {fileID: 0}
+  floorGenerator: {fileID: 0}
+  floorMaterial: {fileID: 0}
