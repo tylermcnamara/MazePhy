@@ -75,74 +75,74 @@ bool Maze::isValid(int row, int col){
 
 bool Maze::checkNeighbor(int row, int col){
     // Check if the neighbor cell is a wall
-    int countWalls = 0;
+    int count_walls = 0;
     if(this->maze->at(row + 1).at(col) == WALL)
-        countWalls++;
+        count_walls++;
 
     if(this->maze->at(row - 1).at(col) == WALL)
-        countWalls++;
+        count_walls++;
 
     if(this->maze->at(row).at(col + 1) == WALL)
-        countWalls++;
+        count_walls++;
     
     if(this->maze->at(row).at(col - 1) == WALL)
-        countWalls++;
+        count_walls++;
 
-    return (countWalls == 3); // If 3 or more walls, it's a valid neighbor
+    return (count_walls == 3); // If 3 or more walls, it's a valid neighbor
 }
 
 
-void Maze::collectAdjacentWalls(int row, int col, std::vector<WallInfo> &frontierList){
-    const int deltaRow[4] = { -1, 1, 0, 0 };
-    const int deltaCol[4] = {  0, 0, -1, 1 };
+void Maze::collectAdjacentWalls(int row, int col, std::vector<WallInfo> &frontier_list){
+    const int delta_row[4] = { -1, 1, 0, 0 };
+    const int delta_col[4] = {  0, 0, -1, 1 };
 
     for (int d = 0; d < 4; ++d) {
-        int wallR = row + deltaRow[d];
-        int wallC = col + deltaCol[d];
-        int nextR = row + 2 * deltaRow[d];
-        int nextC = col + 2 * deltaCol[d];
+        int wallR = row + delta_row[d];
+        int wallC = col + delta_col[d];
+        int nextR = row + 2 * delta_row[d];
+        int nextC = col + 2 * delta_col[d];
 
         if(isValid(nextR, nextC) && maze->at(nextR).at(nextC) == WALL){
-            frontierList.push_back({wallR, wallC, nextR, nextC});
+            frontier_list.push_back({wallR, wallC, nextR, nextC});
         }
     }
 }
 
 // Generates a random maze using a modified Prim's algorithm
-void Maze::createMazePrims(int startRow, int startCol, std::mt19937 &gen)
+void Maze::createMazePrims(int start_row, int start_col, std::mt19937 &gen)
 {
     // These help us move in 4 directions: N, S, W, E
-    const int deltaRow[4] = {-1, 1, 0, 0};
-    const int deltaCol[4] = { 0, 0, -1, 1};
+    const int delta_row[4] = {-1, 1, 0, 0};
+    const int delta_col[4] = { 0, 0, -1, 1};
 
-    std::vector<WallInfo> frontierList;
+    std::vector<WallInfo> frontier_list;
 
     // Start by carving out the initial cell
-    maze->at(startRow).at(startCol) = PATH;
+    maze->at(start_row).at(start_col) = PATH;
 
-    collectAdjacentWalls(startRow, startCol, frontierList);  // fill in the first set of walls
-    std::uniform_int_distribution<std::size_t> randIndex;  // this lets us pick walls at random
+    collectAdjacentWalls(start_row, start_col, frontier_list);  // fill in the first set of walls
+    std::uniform_int_distribution<std::size_t> rand_index;  // this lets us pick walls at random
 
     // Begin the actual maze generation
-    while(!frontierList.empty()){
+    while(!frontier_list.empty()){
         // Randomly pick one of the frontier walls
-        randIndex.param(std::uniform_int_distribution<std::size_t>::param_type(0, frontierList.size() - 1));
-        std::size_t chosenIdx = randIndex(gen);
-        WallInfo chosenWall = frontierList[chosenIdx];
+        rand_index.param(std::uniform_int_distribution<std::size_t>::param_type(0, frontier_list.size() - 1));
+        std::size_t chosen_idx = rand_index(gen);
+        WallInfo chosen_wall = frontier_list[chosen_idx];
 
         // Erase the selected wall (we just swap with the last to avoid moving everything)
-        if(chosenIdx != frontierList.size() - 1){
-            frontierList[chosenIdx] = frontierList.back();
+        if(chosen_idx != frontier_list.size() - 1){
+            frontier_list[chosen_idx] = frontier_list.back();
         }
-        frontierList.pop_back();
+        frontier_list.pop_back();
 
         // If the next cell hasn’t been carved yet, we knock down the wall and continue
-        if(maze->at(chosenWall.nextRow).at(chosenWall.nextCol) == WALL){
-            maze->at(chosenWall.wallRow).at(chosenWall.wallCol) = PATH;
-            maze->at(chosenWall.nextRow).at(chosenWall.nextCol) = PATH;
+        if(maze->at(chosen_wall.next_row).at(chosen_wall.next_col) == WALL){
+            maze->at(chosen_wall.wall_row).at(chosen_wall.wall_col) = PATH;
+            maze->at(chosen_wall.next_row).at(chosen_wall.next_col) = PATH;
 
             // Recursively collect new walls from this newly carved cell
-            collectAdjacentWalls(chosenWall.nextRow, chosenWall.nextCol, frontierList);
+            collectAdjacentWalls(chosen_wall.next_row, chosen_wall.next_col, frontier_list);
         }
         // Otherwise, we've already been here. Just skip this wall
     }
@@ -150,22 +150,22 @@ void Maze::createMazePrims(int startRow, int startCol, std::mt19937 &gen)
 }
 
 void Maze::generateMaze(){
-    /* 1. lay down a solid border & clear interior */
-    initMaze();                                     // keeps start / finish
+    // 1. lay down a solid border & clear interior
+    initMaze();                     
 
-    /* 2. make every interior cell a wall first    */
+    // 2. make every interior cell a wall first   
     for (unsigned r=1;r<rows-1;++r)
         for (unsigned c=1;c<cols-1;++c)
             maze->at(r).at(c) = WALL;
 
     std::mt19937 gen(std::random_device{}());
 
-    /* 3. carve a perfect maze starting two rows above the start */
+    // 3. carve a perfect maze starting two rows above the start
     int sr = rows - 2, sc = start;
     maze->at(sr).at(sc) = PATH;
     createMazePrims(sr, sc, gen);
 
-    /* 4. ensure finish cell is connected */
+    // 4. ensure finish cell is connected
     // If it's still a wall, tunnel straight down until we hit a PATH.
     if (maze->at(1).at(finish) == WALL) {
         int r = 1;

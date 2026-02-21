@@ -12,8 +12,8 @@ enum CellType {
 };
 
 struct WallInfo {
-    int wallRow, wallCol;
-    int nextRow, nextCol;
+    int wall_row, wall_col;
+    int next_row, next_col;
 };
 
 // Maze class: A simple representation of a maze using a 2D vector
@@ -28,7 +28,7 @@ class Maze{
 
         bool isValid(int row, int col);
         bool checkNeighbor(int row, int col);
-        void collectAdjacentWalls(int row, int col, std::vector<WallInfo>& frontierList);
+        void collectAdjacentWalls(int row, int col, std::vector<WallInfo>& frontier_list);
         void createMazePrims(int row, int col, std::mt19937 &gen);
 
     public:
